@@ -214,6 +214,8 @@ def seed_admin_user():
 
 @app.before_request
 def ensure_seed_data():
+    if request.endpoint == "healthz":
+        return
     seed_database()
     sync_seed_products()
     seed_admin_user()
