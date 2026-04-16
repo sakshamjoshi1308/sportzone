@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "sportzone-secret-key")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@sportzone.com").strip().lower()
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+STARTUP_INIT_DONE = False
 
 SPORTS_DATA = [
     {
@@ -212,13 +213,14 @@ def seed_admin_user():
     })
 
 
-@app.before_request
-def ensure_seed_data():
-    if request.endpoint == "healthz":
+def initialize_app_data():
+    global STARTUP_INIT_DONE
+    if STARTUP_INIT_DONE:
         return
     seed_database()
     sync_seed_products()
     seed_admin_user()
+    STARTUP_INIT_DONE = True
 
 
 @app.context_processor
@@ -531,6 +533,8 @@ def admin_dashboard():
 @app.route("/operator")
 def operator_dashboard():
     return redirect(url_for("admin_dashboard"))
+
+initialize_app_data()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
