@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ sport.name }} | SportZone{% endblock %}
+
+{% block content %}
+<section class="section container">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">{{ sport.name }}</p>
+            <h1>{{ sport.tagline }}</h1>
+            <p>{{ sport.hero }}</p>
+        </div>
+    </div>
+    <div class="product-grid">
+        {% for product in products %}
+            <article class="product-card">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+                <div class="product-body">
+                    <p class="chip">{{ product.category }}</p>
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description }}</p>
+                    <div class="detail-meta">
+                        <span>Rs. {{ "%.2f"|format(product.price) }}</span>
+                        <span>{{ product.stock }} in stock</span>
+                    </div>
+                    <form action="{{ url_for('add_to_cart', product_id=product._id) }}" method="post">
+                        <button type="submit" class="btn btn-primary full-width">Add to Cart</button>
+                    </form>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

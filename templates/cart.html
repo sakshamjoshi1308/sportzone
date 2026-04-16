@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Cart | SportZone{% endblock %}
+
+{% block content %}
+<section class="section container">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Your Cart</p>
+            <h1>Review your sports gear</h1>
+        </div>
+    </div>
+    {% if items %}
+        <form method="post" class="cart-shell">
+            <div class="cart-list">
+                {% for item in items %}
+                    <article class="cart-item">
+                        <img src="{{ item.product.image }}" alt="{{ item.product.name }}">
+                        <div class="cart-copy">
+                            <p class="chip">{{ item.product.sport_name }}</p>
+                            <h3>{{ item.product.name }}</h3>
+                            <p>{{ item.product.description }}</p>
+                        </div>
+                        <div class="cart-actions">
+                            <label for="qty_{{ item.product._id }}">Qty</label>
+                            <input id="qty_{{ item.product._id }}" type="number" min="0" name="qty_{{ item.product._id }}" value="{{ item.quantity }}">
+                            <strong>Rs. {{ "%.2f"|format(item.subtotal) }}</strong>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+            <aside class="cart-summary">
+                <h3>Summary</h3>
+                <p>Total <span>Rs. {{ "%.2f"|format(total) }}</span></p>
+                <button type="submit" class="btn btn-secondary full-width">Update Cart</button>
+                <a href="{{ url_for('checkout') }}" class="btn btn-primary full-width">Proceed to Checkout</a>
+            </aside>
+        </form>
+    {% else %}
+        <div class="empty-state">
+            <h3>No items yet</h3>
+            <p>Start with a sport section and add your equipment to the cart.</p>
+            <a href="{{ url_for('home') }}" class="btn btn-primary">Browse Sports</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

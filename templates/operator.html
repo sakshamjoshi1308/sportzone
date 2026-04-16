@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel | SportZone{% endblock %}
+
+{% block content %}
+<section class="section container">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Admin Panel</p>
+            <h1>Customers, orders, and store metrics</h1>
+        </div>
+    </div>
+
+    <div class="metric-grid">
+        <article class="metric-card"><span>{{ metrics.sports }}</span><p>Sports</p></article>
+        <article class="metric-card"><span>{{ metrics.products }}</span><p>Products</p></article>
+        <article class="metric-card"><span>{{ metrics.customers }}</span><p>Customers</p></article>
+        <article class="metric-card"><span>{{ metrics.orders }}</span><p>Orders</p></article>
+        <article class="metric-card"><span>Rs. {{ "%.2f"|format(metrics.sales) }}</span><p>Total Sales</p></article>
+    </div>
+
+    <div class="dashboard-grid">
+        <section class="dashboard-panel">
+            <h2>Customer Records</h2>
+            {% if customers %}
+                {% for customer in customers %}
+                    <article class="data-card">
+                        <h3>{{ customer.full_name }}</h3>
+                        <p><strong>Email:</strong> {{ customer.email }}</p>
+                        <p><strong>Phone:</strong> {{ customer.phone }}</p>
+                        <p><strong>Address:</strong> {{ customer.address }}, {{ customer.city }} - {{ customer.postal_code }}</p>
+                        <p><strong>Favorite Sport:</strong> {{ customer.favorite_sport }}</p>
+                        <p><strong>Saved:</strong> {{ customer.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+                    </article>
+                {% endfor %}
+            {% else %}
+                <p class="empty-copy">No customers yet.</p>
+            {% endif %}
+        </section>
+
+        <section class="dashboard-panel">
+            <h2>Orders</h2>
+            {% if orders %}
+                {% for order in orders %}
+                    <article class="data-card">
+                        <div class="order-head">
+                            <h3>{{ order.customer_name }}</h3>
+                            <span class="chip">{{ order.admin_status }}</span>
+                        </div>
+                        <p><strong>Email:</strong> {{ order.customer_email }}</p>
+                        <p><strong>Total:</strong> Rs. {{ "%.2f"|format(order.total) }}</p>
+                        {% if order.payment %}
+                            <p><strong>Payment Method:</strong> {{ order.payment.method_label }}</p>
+                            <p><strong>Payment Status:</strong> {{ order.payment.status }}</p>
+                            <p><strong>Payment Ref:</strong> {{ order.payment.reference }}</p>
+                        {% endif %}
+                        <p><strong>Created:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+                        <div class="order-items">
+                            {% for item in order["items"] %}
+                                <p>{{ item.product_name }} ({{ item.sport_name }}) x {{ item.quantity }} - Rs. {{ "%.2f"|format(item.subtotal) }}</p>
+                            {% endfor %}
+                        </div>
+                        {% if order.notes %}
+                            <p><strong>Notes:</strong> {{ order.notes }}</p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            {% else %}
+                <p class="empty-copy">No orders yet.</p>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

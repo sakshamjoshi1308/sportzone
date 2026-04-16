@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}SportZone | Dynamic Sports Store{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <p class="eyebrow">Dynamic Sports Ecommerce Website</p>
+            <h1>Train harder. Play sharper. Shop every sport in one place.</h1>
+            <p class="hero-copy">Explore category-based equipment for badminton, football, cricket, basketball, and tennis. Every order stores customer details for the admin team.</p>
+            <div class="hero-actions">
+                <a href="#sports" class="btn btn-primary">Shop Sports</a>
+                {% if current_user %}
+                    <a href="{{ url_for('checkout') }}" class="btn btn-secondary">Checkout Now</a>
+                {% else %}
+                    <a href="{{ url_for('signup') }}" class="btn btn-secondary">Join SportZone</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="hero-card">
+            <div class="stat-card">
+                <span>5</span>
+                <p>sport categories with dynamic MongoDB-backed products</p>
+            </div>
+            <div class="hero-lines"></div>
+        </div>
+    </div>
+</section>
+
+<section class="section container" id="featured">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Featured Gear</p>
+            <h2>Top-performing picks</h2>
+        </div>
+    </div>
+    <div class="product-grid compact-grid">
+        {% for product in featured_products %}
+            <article class="product-card">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+                <div class="product-body">
+                    <p class="chip">{{ product.sport_name }}</p>
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description }}</p>
+                    <div class="product-meta">
+                        <span>Rs. {{ "%.2f"|format(product.price) }}</span>
+                        <form action="{{ url_for('add_to_cart', product_id=product._id) }}" method="post">
+                            <button type="submit" class="btn btn-small">Add to Cart</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section sports-section" id="sports">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Sports Sections</p>
+                <h2>Every sport. Every essential.</h2>
+            </div>
+        </div>
+        <div class="sports-stack">
+            {% for sport in sports %}
+                <section class="sport-panel {{ sport.banner_class }}">
+                    <div class="sport-intro">
+                        <p class="eyebrow">{{ sport.name }}</p>
+                        <h3>{{ sport.tagline }}</h3>
+                        <p>{{ sport.hero }}</p>
+                        <a href="{{ url_for('sport_detail', slug=sport.slug) }}" class="btn btn-secondary">View {{ sport.name }}</a>
+                    </div>
+                    <div class="product-grid">
+                        {% for product in sport.products %}
+                            <article class="product-card">
+                                <img src="{{ product.image }}" alt="{{ product.name }}">
+                                <div class="product-body">
+                                    <p class="chip">{{ product.category }}</p>
+                                    <h4>{{ product.name }}</h4>
+                                    <p>{{ product.description }}</p>
+                                    <div class="product-meta">
+                                        <span>Rs. {{ "%.2f"|format(product.price) }}</span>
+                                        <form action="{{ url_for('add_to_cart', product_id=product._id) }}" method="post">
+                                            <button type="submit" class="btn btn-small">Add</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

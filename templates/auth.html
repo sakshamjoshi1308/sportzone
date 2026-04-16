@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if mode == "signup" %}Signup{% elif mode == "admin" %}Admin Login{% else %}Login{% endif %} | SportZone
+{% endblock %}
+
+{% block content %}
+<section class="section container auth-layout">
+    <div class="auth-panel auth-copy">
+        {% if mode == "signup" %}
+            <p class="eyebrow">Member Access</p>
+            <h1>Create your sports account</h1>
+            <p>Sign up to save your profile, speed up checkout, and place orders through your SportZone account.</p>
+        {% elif mode == "admin" %}
+            <p class="eyebrow">Admin Access</p>
+            <h1>Login to the admin panel</h1>
+            <p>The dashboard with customer records, orders, and sales metrics is visible only after admin login.</p>
+        {% else %}
+            <p class="eyebrow">Member Access</p>
+            <h1>Login to your account</h1>
+            <p>Access your SportZone account to continue shopping and place your order with saved details.</p>
+        {% endif %}
+    </div>
+
+    <div class="auth-panel">
+        {% if mode == "signup" %}
+            <form method="post" class="checkout-form auth-form">
+                <div class="form-grid">
+                    <label>Full Name<input type="text" name="full_name" required></label>
+                    <label>Email<input type="email" name="email" required></label>
+                    <label>Password<input type="password" name="password" minlength="6" required></label>
+                    <label>Favorite Sport<select name="favorite_sport" required>{% for sport in sports %}<option value="{{ sport.name }}">{{ sport.name }}</option>{% endfor %}</select></label>
+                </div>
+                <button type="submit" class="btn btn-primary full-width">Create Account</button>
+            </form>
+            <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+        {% else %}
+            <form method="post" class="checkout-form auth-form">
+                <div class="form-grid auth-stack">
+                    <label>Email<input type="email" name="email" required></label>
+                    <label>Password<input type="password" name="password" required></label>
+                </div>
+                <button type="submit" class="btn btn-primary full-width">
+                    {% if mode == "admin" %}Login as Admin{% else %}Login{% endif %}
+                </button>
+            </form>
+            {% if mode == "admin" %}
+                <p class="auth-switch">Customer account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+            {% else %}
+                <p class="auth-switch">New to SportZone? <a href="{{ url_for('signup') }}">Create an account</a>.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

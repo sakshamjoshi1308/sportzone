@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout | SportZone{% endblock %}
+
+{% block content %}
+<section class="section container checkout-grid">
+    <div>
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Checkout</p>
+                <h1>Customer details and delivery</h1>
+                <p>All submitted customer details are stored in MongoDB and visible in the admin panel.</p>
+            </div>
+        </div>
+        <form method="post" class="checkout-form">
+            <div class="form-grid">
+                <label>Full Name<input type="text" name="full_name" value="{{ current_user.full_name if current_user else '' }}" required></label>
+                <label>Email<input type="email" name="email" value="{{ current_user.email if current_user else '' }}" required></label>
+                <label>Phone<input type="text" name="phone" required></label>
+                <label>Favorite Sport<select name="favorite_sport" required>{% for sport in sports %}<option value="{{ sport.name }}" {% if current_user and current_user.favorite_sport == sport.name %}selected{% endif %}>{{ sport.name }}</option>{% endfor %}</select></label>
+                <label class="full-span">Address<input type="text" name="address" required></label>
+                <label>City<input type="text" name="city" required></label>
+                <label>Postal Code<input type="text" name="postal_code" required></label>
+                <label>Payment Method<select name="payment_method" required>{% for option in payment_options %}<option value="{{ option.value }}">{{ option.label }}</option>{% endfor %}</select></label>
+                <label>Cardholder Name<input type="text" name="card_name" placeholder="Required for card payments"></label>
+                <label>Card Number<input type="text" name="card_number" placeholder="Required for card payments"></label>
+                <label>UPI ID<input type="text" name="upi_id" placeholder="Required for UPI payments"></label>
+                <label class="full-span">Admin Notes<textarea name="notes" rows="4" placeholder="Optional message or delivery notes"></textarea></label>
+            </div>
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </form>
+    </div>
+    <aside class="cart-summary">
+        <h3>Order Summary</h3>
+        {% for item in items %}
+            <div class="summary-line">
+                <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                <strong>Rs. {{ "%.2f"|format(item.subtotal) }}</strong>
+            </div>
+        {% endfor %}
+        <div class="payment-note">
+            <p>Select `Card`, `UPI`, or `Cash on Delivery` before placing the order.</p>
+        </div>
+        <p class="summary-total">Total <span>Rs. {{ "%.2f"|format(total) }}</span></p>
+    </aside>
+</section>
+{% endblock %}

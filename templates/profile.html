@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile | SportZone{% endblock %}
+
+{% block content %}
+<section class="section container">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">My Profile</p>
+            <h1>Your account details</h1>
+            <p>Your basic account information and latest saved delivery details are shown here after login.</p>
+        </div>
+    </div>
+
+    <div class="profile-grid">
+        <section class="profile-card">
+            <p class="eyebrow">Account Info</p>
+            <h2>{{ current_user.full_name }}</h2>
+            <div class="profile-list">
+                <p><strong>Name:</strong> {{ current_user.full_name }}</p>
+                <p><strong>Email:</strong> {{ current_user.email }}</p>
+                <p><strong>Favorite Sport:</strong> {{ current_user.favorite_sport }}</p>
+                <p><strong>Role:</strong> {{ current_user.role|title }}</p>
+            </div>
+        </section>
+
+        <section class="profile-card">
+            <p class="eyebrow">Saved Address</p>
+            {% if customer_profile %}
+                <h2>{{ customer_profile.full_name }}</h2>
+                <div class="profile-list">
+                    <p><strong>Phone:</strong> {{ customer_profile.phone }}</p>
+                    <p><strong>Address:</strong> {{ customer_profile.address }}</p>
+                    <p><strong>City:</strong> {{ customer_profile.city }}</p>
+                    <p><strong>Postal Code:</strong> {{ customer_profile.postal_code }}</p>
+                    <p><strong>Latest Saved:</strong> {{ customer_profile.created_at.strftime('%Y-%m-%d %H:%M UTC') }}</p>
+                </div>
+            {% else %}
+                <div class="empty-state profile-empty">
+                    <h3>No address saved yet</h3>
+                    <p>Complete one checkout order and your latest delivery details will appear here automatically.</p>
+                    <a href="{{ url_for('cart') }}" class="btn btn-primary">Go to Cart</a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}
