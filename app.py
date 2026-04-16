@@ -200,8 +200,17 @@ def sync_seed_products():
 def seed_admin_user():
     admin = db.users.find_one({"email": ADMIN_EMAIL})
     if admin:
-        if admin.get("role") != "admin":
-            db.users.update_one({"_id": admin["_id"]}, {"$set": {"role": "admin"}})
+        db.users.update_one(
+            {"_id": admin["_id"]},
+            {
+                "$set": {
+                    "full_name": "SportZone Admin",
+                    "favorite_sport": "Badminton",
+                    "role": "admin",
+                    "password_hash": generate_password_hash(ADMIN_PASSWORD),
+                }
+            },
+        )
         return
     db.users.insert_one({
         "full_name": "SportZone Admin",
